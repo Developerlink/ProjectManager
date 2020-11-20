@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectManagerLibrary;
+using ProjectManagerLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,44 +21,177 @@ namespace ProjectManagerUI
     /// </summary>
     public partial class DayManagementWindow : Window
     {
+        public List<Day> DayList { get; set; } = GlobalConfig.Connection.GetDays();
+
         public DayManagementWindow()
         {
             InitializeComponent();
 
-            txtNum1.Text = _numValue.ToString();
+            WireUpLists();
         }
 
-        private int _numValue = 0;
-
-        public int NumValue
+        void WireUpLists()
         {
-            get { return _numValue; }
-            set
-            {
-                _numValue = value;
-                txtNum1.Text = value.ToString();
-            }
+            daysListView.ItemsSource = null;
+            daysListView.ItemsSource = DayList;
         }
 
-        private void cmdUp_Click(object sender, RoutedEventArgs e)
+        // This method makes sure that only numbers can be entered in the textbox. 
+        private void wthTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            NumValue++;
-        }
+            int num = 0;
 
-        private void cmdDown_Click(object sender, RoutedEventArgs e)
-        {
-            NumValue--;
-        }
-
-        private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (txtNum1 == null)
+            if (wthTextbox == null)
             {
                 return;
             }
 
-            if (!int.TryParse(txtNum1.Text, out _numValue))
-                txtNum1.Text = _numValue.ToString();
+            // If parsing to int is false, then change the text in textbox to the current value in the private field.
+            if (!int.TryParse(wthTextbox.Text, out num))
+            {
+                wthTextbox.Text = num.ToString();
+            }
+        }
+
+        private void fthTextbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int num = 0;
+
+            if (fthTextbox == null)
+            {
+                return;
+            }
+
+            // If parsing to int is false, then change the text in textbox to the current value in the private field.
+            if (!int.TryParse(fthTextbox.Text, out num))
+            {
+                fthTextbox.Text = num.ToString();
+            }
+        }
+
+
+        private void wthUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if textbox is empty
+            if (wthTextbox == null)
+            {
+                return;
+            }
+
+            // Check if text can be parsed into an int and store in num if it can. 
+            int num = 0;
+            if (int.TryParse(wthTextbox.Text, out num))
+            {
+                if (0 <= num && num < 24)
+                {
+                    // Add 1 to num and change text to new value.
+                    num++;
+                    wthTextbox.Text = num.ToString();
+                }
+                else if (24 <= num)
+                {
+                    num = 24;
+                    wthTextbox.Text = num.ToString();
+                }
+                else if (num < 0)
+                {
+                    num = 0;
+                    wthTextbox.Text = num.ToString();
+                }
+            }
+        }
+
+        private void wthDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if textbox is empty
+            if (wthTextbox == null)
+            {
+                return;
+            }
+
+            // Check if text can be parsed into an int and store in num if it can. 
+            int num = 0;
+            if (int.TryParse(wthTextbox.Text, out num))
+            {
+                if (1 <= num && num <= 24)
+                {
+                    // Subtract 1 to num and change text to new value.
+                    num--;
+                    wthTextbox.Text = num.ToString();
+                }
+                else if (24 <= num)
+                {
+                    num = 24;
+                    wthTextbox.Text = num.ToString();
+                }
+                else if (num < 0)
+                {
+                    num = 0;
+                    wthTextbox.Text = num.ToString();
+                }
+            }
+        }
+
+        private void fthUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if textbox is empty
+            if (fthTextbox == null)
+            {
+                return;
+            }
+
+            // Check if text can be parsed into an int and store in num if it can. 
+            int num = 0;
+            if (int.TryParse(fthTextbox.Text, out num))
+            {
+                if (0 <= num && num < 24)
+                {
+                    // Add 1 to num and change text to new value.
+                    num++;
+                    fthTextbox.Text = num.ToString();
+                }
+                else if (24 <= num)
+                {
+                    num = 24;
+                    fthTextbox.Text = num.ToString();
+                }
+                else if (num < 0)
+                {
+                    num = 0;
+                    fthTextbox.Text = num.ToString();
+                }
+            }
+        }
+
+        private void fthDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if textbox is empty
+            if (fthTextbox == null)
+            {
+                return;
+            }
+
+            // Check if text can be parsed into an int and store in num if it can. 
+            int num = 0;
+            if (int.TryParse(fthTextbox.Text, out num))
+            {
+                if (1 <= num && num <= 24)
+                {
+                    // Subtract 1 to num and change text to new value.
+                    num--;
+                    fthTextbox.Text = num.ToString();
+                }
+                else if (24 <= num)
+                {
+                    num = 24;
+                    fthTextbox.Text = num.ToString();
+                }
+                else if (num < 0)
+                {
+                    num = 0;
+                    fthTextbox.Text = num.ToString();
+                }
+            }
         }
     }
 }

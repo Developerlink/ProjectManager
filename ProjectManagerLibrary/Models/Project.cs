@@ -13,10 +13,10 @@ namespace ProjectManagerLibrary.Models
         public DateTime StartDate { get; set; }
         public DateTime EstimatedEndDate { get; set; }
         public DateTime ActualEndDate { get; set; }
-        public int EstimatedHoursToComplete { get; set; }
-        public int EstimatedDaysToComplete { get; set; }
-        public int ActualDaysUsedToComplete { get; set; }
-        public int ActualHoursUsedToComplete { get; set; }
+        public int EstimatedHours { get; set; }
+        public int ActualHours { get; set; }
+        public int EstimatedDays { get; set; }
+        public int ActualDays { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public string ProjectType { get; set; }

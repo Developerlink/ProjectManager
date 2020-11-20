@@ -10,7 +10,7 @@ namespace ProjectManagerLibrary.Models
     public class Day
     {
         public int ID { get; set; }
-        public string WeekDay { get; set; }
+        public string Name { get; set; }
         public TimeSpan AvailableWorkTime { get; set; }
         public TimeSpan AvailableFreeTime { get; set; }
     }

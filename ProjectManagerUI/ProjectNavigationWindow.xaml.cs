@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManagerLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,12 @@ namespace ProjectManagerUI
         {
             InitializeComponent();
 
-            var window = new ProjectManagerWindow();
+            // Initialize the database connection.
+            GlobalConfig.InitializeConnections(DatabaseType.Sql);
+
+            //var window = new ProjectManagerWindow();
+            
+            var window = new DayManagementWindow();
             window.Show();
             Close();
         }

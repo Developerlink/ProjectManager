@@ -25,7 +25,7 @@
             <Label Content="Week Day"
                    FontSize="30"
                    HorizontalContentAlignment="Center" />
-            <Label x:Name="weekDayNameLabel"
+            <Label x:Name="dayNameValueLabel"
                    FontSize="25"
                    Margin="30,0"
                    Width="150"
@@ -39,27 +39,27 @@
                    Margin="30,20,30,0"/>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <TextBox x:Name="txtNum1"
+                <TextBox x:Name="wthTextbox"
                          x:FieldModifier="private"
                          Margin="5,5,0,5"
                          Width="50"
                          FontSize="20"
                          Text="0"
-                         TextChanged="txtNum_TextChanged" />
-                <Button x:Name="cmdUp1"
+                         TextChanged="wthTextbox_TextChanged" />
+                <Button x:Name="wthUpButton"
                         x:FieldModifier="private"
                         Margin="5,5,0,5"
                         FontFamily="Marlett"
                         Content="5"
                         Width="20"
-                        Click="cmdUp_Click" />
-                <Button x:Name="cmdDown1"
+                        Click="wthUpButton_Click" />
+                <Button x:Name="wthDownButton"
                         x:FieldModifier="private"
                         Margin="0,5,0,5"
                         FontFamily="Marlett"
                         Content="6"
                         Width="20"
-                        Click="cmdDown_Click" />
+                        Click="wthDownButton_Click" />
             </StackPanel>
             <Label Content="Free Time Hours"
                    FontSize="20"
@@ -67,33 +67,33 @@
                    Margin="30,20,30,0" />
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <TextBox x:Name="txtNumb"
+                <TextBox x:Name="fthTextbox"
                          x:FieldModifier="private"
                          Margin="5,5,0,5"
                          Width="50"
                          FontSize="20"
                          Text="0"
-                         TextChanged="txtNum_TextChanged" />
-                <Button x:Name="cmdUp"
+                         TextChanged="fthTextbox_TextChanged" />
+                <Button x:Name="fthUpButton"
                         x:FieldModifier="private"
                         Margin="5,5,0,5"
                         FontFamily="Marlett"
                         Content="5"
                         Width="20"
-                        Click="cmdUp_Click" />
-                <Button x:Name="cmdDown"
+                        Click="fthUpButton_Click" />
+                <Button x:Name="fthDownButton"
                         x:FieldModifier="private"
                         Margin="0,5,0,5"
                         FontFamily="Marlett"
                         Content="6"
                         Width="20"
-                        Click="cmdDown_Click" />
+                        Click="fthDownButton_Click" />
             </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="1"
                     Grid.Row="1">
-            <ListView x:Name="weekDaysListView"
+            <ListView x:Name="daysListView"
                       Height="270"
                       Margin="10,20,30,10">
                 <ListView.Resources>
@@ -129,7 +129,7 @@
                                         Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Frontend}"
+                                    <TextBlock Text="{Binding AvailableWorkTime, StringFormat={}{0:hh}}"
                                                Margin="-6, -3,-5,0" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -138,7 +138,7 @@
                                         Width="auto">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Backend}"
+                                    <TextBlock Text="{Binding AvailableFreeTime, StringFormat={}{0:hh}}"
                                                Margin="-6, -3,-5,0" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
