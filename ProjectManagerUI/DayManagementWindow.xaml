@@ -29,9 +29,10 @@
                    FontSize="25"
                    Margin="30,0"
                    Width="150"
-                   Height="30"
+                   Height="45"
                    BorderThickness="1"
                    BorderBrush="Black"
+                   HorizontalContentAlignment="Center"
                    HorizontalAlignment="Center" />
             <Label Content="Work Time Hours"
                    FontSize="20"
@@ -95,7 +96,8 @@
                     Grid.Row="1">
             <ListView x:Name="daysListView"
                       Height="270"
-                      Margin="10,20,30,10">
+                      Margin="10,20,30,10"
+                      SelectionChanged="daysListView_SelectionChanged">
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment"
@@ -147,10 +149,12 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button Content="Modify"
+            <Button Name="modifyButton" 
+                    Content="Modify"
                     FontSize="20"
                     Width="100"
-                    Margin="140,10,10,10" />
+                    Margin="140,10,10,10"
+                    Click="modifyButton_Click" />
         </StackPanel>
 
     </Grid>

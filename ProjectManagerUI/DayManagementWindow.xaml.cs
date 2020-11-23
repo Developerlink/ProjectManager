@@ -69,7 +69,6 @@ namespace ProjectManagerUI
             }
         }
 
-
         private void wthUpButton_Click(object sender, RoutedEventArgs e)
         {
             // Check if textbox is empty
@@ -192,6 +191,34 @@ namespace ProjectManagerUI
                     fthTextbox.Text = num.ToString();
                 }
             }
+        }
+
+        private void daysListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Day selectedDay = (Day)daysListView.SelectedItem;
+
+            if (selectedDay != null)
+            {
+                dayNameValueLabel.Content = selectedDay.Name;
+                wthTextbox.Text = selectedDay.AvailableWorkTime.Hours.ToString();
+                fthTextbox.Text = selectedDay.AvailableFreeTime.Hours.ToString();
+            }
+
+        }
+
+        private void modifyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Day selectedDay = (Day)daysListView.SelectedItem;
+
+            // Convert the int number of hourse to timespan object.
+            selectedDay.AvailableWorkTime = TimeSpan.FromHours(Convert.ToDouble(wthTextbox.Text));
+            selectedDay.AvailableFreeTime = TimeSpan.FromHours(Convert.ToDouble(fthTextbox.Text));
+
+            // Update the selected day in the database.
+            GlobalConfig.Connection.UpdateDay(selectedDay);
+
+            // Refresh the list of days.
+            WireUpLists();
         }
     }
 }

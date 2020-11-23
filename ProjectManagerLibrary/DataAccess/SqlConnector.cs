@@ -33,7 +33,7 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@ID", day.ID);
                 p.Add("@Name", day.Name);
                 p.Add("@AvailableWorkTime", day.AvailableWorkTime);
-                p.Add("@AvailableFreeTime9", day.AvailableFreeTime);
+                p.Add("@AvailableFreeTime", day.AvailableFreeTime);
 
                 conn.Execute("dbo.spDays_Update", p, commandType: CommandType.StoredProcedure);
             }

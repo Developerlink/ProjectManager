@@ -8,7 +8,7 @@
         Title="Project Manager"
         Height="475"
         Width="300">
-    <Grid>
+    <Grid Margin="0,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
