@@ -37,13 +37,13 @@ namespace ProjectManagerUI
     //x TODO: 6a) Create the const string prop db in SqlConnector and use that in the using statement for every 
     //x TODO: 6a) new SqlConnection(GlobalConfig.Connection(db))
     //x TODO: 6a) That's it. 
-    //! TODO: 6b) Make the queries:
-    // TODO: 6b) ad using system.data 
-    // TODO: 6b) Make the stored procedures in MS-SQL Server
+    //x TODO: 6b) Make the queries:
+    //x TODO: 6b) ad using system.data 
+    //x TODO: 6b) Make the stored procedures in MS-SQL Server
 
 
 
-    // TODO: 7) Add business and interaction logic to each form, starting with all the create forms first.
+    // TODO: 7) Add business and interaction logic to each form, starting with create, read, update, delete.
     // TODO: 8) Test and debug everything.
     // TODO: 9) Refactor and retest.
     // TODO: 10) Polish aesthetics of GUI. 

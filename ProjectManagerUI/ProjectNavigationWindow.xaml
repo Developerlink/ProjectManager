@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Project Manager"
         Height="500"
-        Width="600">
+        Width="600"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -33,9 +34,9 @@
                       Grid.ColumnSpan="2"
                       Grid.Row="0"
                       Margin="20,20,10,0">
-                <ComboBoxItem Content="Public"
+                <ComboBoxItem Content="Work"
                               IsSelected="True" />
-                <ComboBoxItem Content="Private" />
+                <ComboBoxItem Content="Home" />
             </ComboBox>
             <StackPanel Orientation="Horizontal"
                         Margin="10"
@@ -100,7 +101,8 @@
                   Grid.Column="0"
                   Grid.ColumnSpan="4"
                   Grid.Row="1"
-                  Margin="20">
+                  Margin="20"
+                  PreviewKeyDown="projectListView_PreviewKeyDown">
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
                     <Setter Property="HorizontalContentAlignment"
@@ -122,7 +124,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Project Name"
-                                    Width="200">
+                                    Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"
@@ -134,16 +136,16 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Frontend}"
+                                <TextBlock Text="{Binding ProjectType}"
                                            Margin="-6, -3,-5,0" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Language"
-                                    Width="auto">
+                    <GridViewColumn Header="Tech Stack"
+                                    Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Backend}"
+                                <TextBlock Text="{Binding TechStack}"
                                            Margin="-6, -3,-5,0" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -161,7 +163,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
+                                <TextBlock Text="{Binding EstimatedEndDate, StringFormat=dd-MM-yyyy }"
                                            Margin="-6, -3,-5,0" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -170,12 +172,12 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
+                                <TextBlock Text="{Binding ActualDays}"
+                                           TextAlignment="Right"
                                            Margin="-6, -3,-5,0" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
                 </GridView>
             </ListView.View>
         </ListView>

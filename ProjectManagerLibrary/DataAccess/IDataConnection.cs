@@ -11,5 +11,12 @@ namespace ProjectManagerLibrary.DataAccess
     {
         List<Day> GetDays();
         void UpdateDay(Day day);
+        void InsertProject(Project project);
+        List<Project> GetProjects();
+        Project GetProject(int id);
+        List<ProjectManagerLibrary.Models.Task> GetTasks();
+        List<ProjectManagerLibrary.Models.Task> GetSubTasks();
+        List<ProjectManagerLibrary.Models.Task> GetSubSubTasks();
+
     }
 }

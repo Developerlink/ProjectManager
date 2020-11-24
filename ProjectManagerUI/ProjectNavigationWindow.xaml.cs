@@ -1,4 +1,5 @@
 ﻿using ProjectManagerLibrary;
+using ProjectManagerLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace ProjectManagerUI
     /// </summary>
     public partial class ProjectNavigationWindow : Window
     {
+        List<Project> Projects { get; set; }
         public ProjectNavigationWindow()
         {
             InitializeComponent();
@@ -27,11 +29,23 @@ namespace ProjectManagerUI
             // Initialize the database connection.
             GlobalConfig.InitializeConnections(DatabaseType.Sql);
 
+            LoadProjectsFromDB();
+            WireUpLists();
+
             //var window = new ProjectManagerWindow();
-            
-            var window = new DayManagementWindow();
-            window.Show();
-            Close();
+
+
+        }
+
+        private void LoadProjectsFromDB()
+        {
+            Projects = GlobalConfig.Connection.GetProjects();
+        }
+
+        private void WireUpLists()
+        {
+            projectListView.ItemsSource = null;
+            projectListView.ItemsSource = Projects;
         }
 
         private void creditsButton_Click(object sender, RoutedEventArgs e)
@@ -50,6 +64,32 @@ namespace ProjectManagerUI
         {
             var window = new ProjectCreationWindow();
             window.Show();
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Down)) || (Keyboard.IsKeyDown(Key.RightCtrl) && Keyboard.IsKeyDown(Key.Down)))
+            {
+                //MessageBox.Show($"{Key.Tab} + {Key.Down}");
+                if (projectListView.Items.Count > 0)
+                {
+                    projectListView.SelectedItem = projectListView.Items[0];
+                    projectListView.Focus();
+                }
+            }
+        }
+
+        private void projectListView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (projectListView.SelectedItem != null)
+            {
+                if (Keyboard.IsKeyDown(Key.Enter))
+                {
+                    var project = projectListView.SelectedItem;
+                    var window = new ProjectManagerWindow();
+                    window.Show();
+                }
+            }
         }
     }
 }

@@ -219,6 +219,10 @@ namespace ProjectManagerUI
 
             // Refresh the list of days.
             WireUpLists();
+
+            //x Make an update stored procedure
+            //x Make the update method i SqlConnector and extract to data connection interface
+            //x The create methd and put selectedDay in it. 
         }
     }
 }

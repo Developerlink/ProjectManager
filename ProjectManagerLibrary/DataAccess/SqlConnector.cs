@@ -12,22 +12,23 @@ namespace ProjectManagerLibrary.DataAccess
 {
     public class SqlConnector : IDataConnection
     {
-        private const string ConnectionStringName = "ProjectManagerSql";
+        private const string SqlConnectionNameInAppConfig = "ProjectManagerSql";
 
         public List<Day> GetDays()
         {
             List<Day> output;
 
-                   using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(ConnectionStringName)))
-                 {
-                      output = conn.Query<Day>("dbo.spDays_Get").ToList();
-                  }
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                output = conn.Query<Day>("dbo.spDays_Get").ToList();
+            }
 
             return output;
         }
+
         public void UpdateDay(Day day)
         {
-            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(ConnectionStringName)))
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
                 var p = new DynamicParameters();
                 p.Add("@ID", day.ID);
@@ -37,6 +38,64 @@ namespace ProjectManagerLibrary.DataAccess
 
                 conn.Execute("dbo.spDays_Update", p, commandType: CommandType.StoredProcedure);
             }
+        }
+
+        public void InsertProject(Project project)
+        {
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@Name", project.Name);
+                p.Add("@ProjectType", project.ProjectType);
+                p.Add("@TechStack", project.TechStack);
+                p.Add("@StartDate", project.StartDate);
+                p.Add("@EstimatedEndDate", project.EstimatedEndDate);
+                p.Add("@WorkSpace", project.WorkSpace);
+
+                conn.Execute("[dbo].[spProjects_Insert]", p, commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public List<Project> GetProjects()
+        {
+            List<Project> output;
+
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                output = conn.Query<Project>("dbo.spProjects_GetAll").ToList();
+            }
+
+            return output;
+        }
+
+        public Project GetProject(int id)
+        {
+            Project output = new Project();
+
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ID", id);
+
+                output = conn.QuerySingle<Project>("dbo.spProjects_Get", p, commandType: CommandType.StoredProcedure);
+            }
+
+            return output;
+        }
+
+        public List<Models.Task> GetSubSubTasks()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Models.Task> GetSubTasks()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Models.Task> GetTasks()
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -363,5 +422,5 @@ namespace ProjectManagerLibrary.DataAccess
         //        // Flag tournament as inactive.
 
         //    }
-        }
     }
+}

@@ -18,6 +18,10 @@ namespace ProjectManagerLibrary.Models
         public TimeSpan EstimatedHours { get; set; }
         public TimeSpan ActualHours { get; set; }
         public int WorkDays { get; set; }
+        // 1 = task
+        // 2 = subtask
+        // 3 = subsubtask
+        public int TaskLevel { get; set; }
         public List<Task> SubTaskList { get; set; }
     }
 }
