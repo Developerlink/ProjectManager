@@ -21,6 +21,7 @@ namespace ProjectManagerUI
     /// </summary>
     public partial class ProjectCreationWindow : Window
     {
+        IDataUpdater callingWindow;
         public ProjectCreationWindow()
         {
             InitializeComponent();
@@ -28,18 +29,14 @@ namespace ProjectManagerUI
             FillFormWithDummyData();
         }
 
-        private void saveButton_Click(object sender, RoutedEventArgs e)
+        public ProjectCreationWindow(IDataUpdater caller)
         {
-            if(InputIsValid())
-            {
-                var project = CreateProjectModel();
+            InitializeComponent();
 
-                GlobalConfig.Connection.InsertProject(project);
+            callingWindow = caller;
 
-                ResetAllFields();
-            }
         }
-
+        
         public void FillFormWithDummyData()
         {
             nameTextBox.Text = "Heads up!";
@@ -60,7 +57,7 @@ namespace ProjectManagerUI
             workRadioButton.IsChecked = true;
         }
 
-        private Project CreateProjectModel()
+        private Project TransformInputToProjectModel()
         {
             var project = new Project();
 
@@ -116,6 +113,20 @@ namespace ProjectManagerUI
             }
 
             return output;
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (InputIsValid())
+            {
+                var project = TransformInputToProjectModel();
+
+                GlobalConfig.Connection.InsertProject(project);
+
+                callingWindow.UpdateProjectList(project);
+
+                ResetAllFields();
+            }
         }
     }
 }

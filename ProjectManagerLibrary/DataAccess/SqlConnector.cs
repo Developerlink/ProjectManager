@@ -47,12 +47,26 @@ namespace ProjectManagerLibrary.DataAccess
                 var p = new DynamicParameters();
                 p.Add("@Name", project.Name);
                 p.Add("@ProjectType", project.ProjectType);
-                p.Add("@TechStack", project.TechStack);
+                p.Add("@TechStack", "TestingStack");
                 p.Add("@StartDate", project.StartDate);
                 p.Add("@EstimatedEndDate", project.EstimatedEndDate);
                 p.Add("@WorkSpace", project.WorkSpace);
+                p.Add("@ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 conn.Execute("[dbo].[spProjects_Insert]", p, commandType: CommandType.StoredProcedure);
+
+                project.ID = p.Get<int>("@ID");
+            }
+        }
+
+        public void DeleteProject(Project project)
+        {
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ID", project.ID);
+
+                conn.Execute("dbo.spProjects_Delete", p, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -82,6 +96,24 @@ namespace ProjectManagerLibrary.DataAccess
 
             return output;
         }
+        public void UpdateProject(Project project)
+        {
+            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ID", project.ID);
+                p.Add("@Name", project.Name);
+                p.Add("@ProjectType", project.ProjectType);
+                p.Add("@TechStack", project.TechStack);
+                p.Add("@StartDate", project.StartDate);
+                p.Add("@EstimatedEndDate", project.EstimatedEndDate);
+                p.Add("@ActualEndDate", project.ActualEndDate);
+                p.Add("@WorkSpace", project.WorkSpace);              
+                p.Add("@IsEnded", project.IsEnded);
+
+                conn.Execute("dbo.Projects_Update", p, commandType: CommandType.StoredProcedure);
+            }
+        }
 
         public List<Models.Task> GetSubSubTasks()
         {
@@ -97,6 +129,7 @@ namespace ProjectManagerLibrary.DataAccess
         {
             throw new NotImplementedException();
         }
+
 
 
         //    public void CreatePerson(PersonModel model)

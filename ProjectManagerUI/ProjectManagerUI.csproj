@@ -87,6 +87,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDataUpdater.cs" />
     <Compile Include="ProjectCreationWindow.xaml.cs">
       <DependentUpon>ProjectCreationWindow.xaml</DependentUpon>
     </Compile>

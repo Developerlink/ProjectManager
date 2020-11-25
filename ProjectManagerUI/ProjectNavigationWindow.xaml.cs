@@ -19,7 +19,7 @@ namespace ProjectManagerUI
     /// <summary>
     /// Interaction logic for ProjectNavigationWindow.xaml
     /// </summary>
-    public partial class ProjectNavigationWindow : Window
+    public partial class ProjectNavigationWindow : Window, IDataUpdater
     {
         List<Project> Projects { get; set; }
         public ProjectNavigationWindow()
@@ -32,9 +32,9 @@ namespace ProjectManagerUI
             LoadProjectsFromDB();
             WireUpLists();
 
-            //var window = new ProjectManagerWindow();
-
-
+            var window = new ProjectManagerWindow(24);
+            window.Show();
+            Close();
         }
 
         private void LoadProjectsFromDB()
@@ -62,7 +62,8 @@ namespace ProjectManagerUI
 
         private void createProjectButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = new ProjectCreationWindow();
+            // Remember to pass in this window as an IDataUpdater interface
+            var window = new ProjectCreationWindow(this);
             window.Show();
         }
 
@@ -70,7 +71,6 @@ namespace ProjectManagerUI
         {
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Down)) || (Keyboard.IsKeyDown(Key.RightCtrl) && Keyboard.IsKeyDown(Key.Down)))
             {
-                //MessageBox.Show($"{Key.Tab} + {Key.Down}");
                 if (projectListView.Items.Count > 0)
                 {
                     projectListView.SelectedItem = projectListView.Items[0];
@@ -85,11 +85,54 @@ namespace ProjectManagerUI
             {
                 if (Keyboard.IsKeyDown(Key.Enter))
                 {
-                    var project = projectListView.SelectedItem;
-                    var window = new ProjectManagerWindow();
+                    var project = projectListView.SelectedItem as Project;
+                    var window = new ProjectManagerWindow(project.ID);
                     window.Show();
                 }
+                else if (Keyboard.IsKeyDown(Key.Delete))
+                {
+                    int currentIndex = projectListView.SelectedIndex;
+
+                    if (projectListView.Items.Count > 0)
+                    {
+                        var project = projectListView.SelectedItem as Project;
+                        GlobalConfig.Connection.DeleteProject(project);
+                        Projects.Remove(project);
+                        //LoadProjectsFromDB();
+                        WireUpLists();
+                        SetListviewSelectedItemVia(currentIndex);
+                    }
+                }
             }
+        }
+
+        void SetListviewSelectedItemVia(int index)
+        {
+            // If index of deleted item is the last go back 1 item. 
+            // It's not count - 1 beacuse the list has been updated after deletion.
+            // The index of the last item is the number of current items after it was deleted.
+            if (index == projectListView.Items.Count)
+            {
+                projectListView.SelectedIndex = index - 1;
+            }
+            else
+            {
+                projectListView.SelectedIndex = index;
+            }
+        }
+
+        public void UpdateProjectList(Project project)
+        {
+            // For this to work first create the IDataUpdater interface
+            // Add the AddProject method to the interface 
+            // Implement that interface to this window
+            // Create a constructor for the other window that takes an IDataUpdater interface called 'caller'
+            // Pass this window as an IDataUpdater interface to the other window (benefit of loose coupling instead of binding to this exact window)
+            // The other window now has access to this method and all it has to do is pass in a project 
+            // (don't make logic for this window in the other window!)           
+            // The project will then be used to do the following:
+            Projects.Add(project);
+            WireUpLists();
         }
     }
 }

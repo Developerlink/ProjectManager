@@ -12,7 +12,7 @@ namespace ProjectManagerLibrary.Models
         public string Name { get; set; }
         public DateTime StartDate { get; set; } = DateTime.Parse("1800-01-01");          
         public DateTime EstimatedEndDate { get; set; } = DateTime.Parse("1800-01-01");
-        public DateTime ActualEndDate { get; set; }
+        public DateTime ActualEndDate { get; set; } = DateTime.Parse("1800-01-01");
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }
         public int EstimatedDays { get; set; }
@@ -21,7 +21,7 @@ namespace ProjectManagerLibrary.Models
         public DateTime ModifiedDate { get; set; }
         public string ProjectType { get; set; }
         public string TechStack { get; set; }
-        public string ProjectStatus { get; set; }
+        public bool IsEnded { get; set; }
         public string WorkSpace { get; set; }
         public List<Task> TaskList { get; set; }
     }

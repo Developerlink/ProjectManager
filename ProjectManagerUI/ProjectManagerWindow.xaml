@@ -46,7 +46,7 @@
                    FontWeight="DemiBold"
                    HorizontalAlignment="Center"
                    Grid.Column="1" />
-            <TextBox Name="projectNameTextBox" 
+            <TextBox Name="projectNameTextBox"
                      Text="Heads Up!"
                      Width="200"
                      Height="40"
@@ -78,7 +78,7 @@
                    Grid.Column="0"
                    Grid.Row="0"
                    Grid.RowSpan="2" />
-            <TextBox Name="projectTypeTextBox" 
+            <TextBox Name="projectTypeTextBox"
                      Text="Mobile"
                      Width="200"
                      Height="40"
@@ -111,7 +111,7 @@
                    Grid.Column="0"
                    Grid.Row="0"
                    Grid.RowSpan="2" />
-            <TextBox Name="projectTechStackTextBox" 
+            <TextBox Name="projectTechStackTextBox"
                      Text="Flutter"
                      Width="200"
                      Height="40"
@@ -139,39 +139,40 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Content="Start Date:"
-                   FontSize="18"
+                   FontSize="14"
                    FontWeight="DemiBold"
                    HorizontalAlignment="Center"
                    VerticalContentAlignment="Center"
                    Grid.Column="0"
                    Grid.Row="0" />
-            <Label Content="End Date:"
-                   FontSize="18"
+            <Label Name="endDateLabel" 
+                   Content="Estimated End Date:"
+                   FontSize="14"
                    FontWeight="DemiBold"
                    HorizontalAlignment="Center"
                    VerticalContentAlignment="Center"
                    Grid.Column="0"
                    Grid.Row="1" />
-            <DatePicker x:Name="startDateValueLabel"
-                     FontSize="15"
-                     FontWeight="DemiBold"
-                     Width="200"
-                     Height="40"
-                     VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center"
-                     HorizontalAlignment="Center"
-                     Grid.Column="1"
-                     Grid.Row="0" />
-            <DatePicker x:Name="endDateValueLabel"
-                     FontSize="15"
-                     FontWeight="DemiBold"
-                     Width="200"
-                     Height="40"
-                     VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center"
-                     HorizontalAlignment="center"
-                     Grid.Column="1"
-                     Grid.Row="1" />
+            <DatePicker x:Name="startDateDatePicker"
+                        FontSize="15"
+                        FontWeight="DemiBold"
+                        Width="200"
+                        Height="40"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Grid.Column="1"
+                        Grid.Row="0" />
+            <DatePicker x:Name="endDateDatePicker"
+                        FontSize="15"
+                        FontWeight="DemiBold"
+                        Width="200"
+                        Height="40"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="center"
+                        Grid.Column="1"
+                        Grid.Row="1" />
         </Grid>
 
         <Grid   Grid.Column="1"
@@ -220,13 +221,13 @@
             <Image Height="50"
                    Source="/Images/hour.png"
                    Margin="20,10"
-                   Grid.Column="0"/>
+                   Grid.Column="0" />
             <Label Content="15H"
                    FontSize="24"
                    FontWeight="DemiBold"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
-                   Grid.Column="1"/>
+                   Grid.Column="1" />
             <Image Height="50"
                    Source="/Images/calendar.png"
                    Margin="20,10"
@@ -236,7 +237,7 @@
                    FontWeight="DemiBold"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
-                   Grid.Column="3"/>
+                   Grid.Column="3" />
         </Grid>
 
         <Grid   Grid.Column="1"
@@ -265,23 +266,31 @@
                    HorizontalAlignment="Center"
                    Grid.Column="1"
                    Grid.Row="0" />
-            <Viewbox Height="25"
-                     Grid.Row="1">
+
             <RadioButton Name="workRadioButton"
                          Grid.Column="0"
-                         Grid.Row="1"                         
+                         Grid.Row="1"
                          VerticalAlignment="Center"
-                         HorizontalAlignment="Center" />
-            </Viewbox>
-            <Viewbox Height="25"
-                     Grid.Row="1"
-                     Grid.Column="1">
-                <RadioButton Name="homeRadioButton"
-                             Grid.Column="0"
-                             Grid.Row="1"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center" />
-            </Viewbox>
+                         HorizontalAlignment="Center"
+                         Margin="0,0,10,20">
+                <RadioButton.RenderTransform>
+                    <ScaleTransform ScaleX="2"
+                                    ScaleY="2" />
+                </RadioButton.RenderTransform>
+            </RadioButton>
+
+            <RadioButton Name="homeRadioButton"
+                         Grid.Column="1"
+                         Grid.Row="1"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Margin="0,0,10,20">
+                <RadioButton.RenderTransform>
+                    <ScaleTransform ScaleX="2"
+                                    ScaleY="2" />
+                </RadioButton.RenderTransform>
+            </RadioButton>
+
         </Grid>
 
         <Grid Grid.Column="1"
@@ -307,20 +316,17 @@
                            Grid.Column="0" />
             </Grid>
             <Grid Grid.Column="1">
-                <Button Content="End Project"
-                        FontSize="20"
-                        FontWeight="DemiBold"
-                        HorizontalAlignment="Center"
-                        Height="35"
-                        Width="150"
-                        Background="CornflowerBlue"
-                        Foreground="White"
-                        BorderBrush="Black"
-                        BorderThickness="3"
-                        Grid.Column="1"
-                        Grid.Row="0"
-                        Grid.RowSpan="2" />
-
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Viewbox Height="25">
+                        <CheckBox Name="isEndedCheckBox" />
+                    </Viewbox>
+                    <Label Content="Ended Project"
+                           FontSize="20"
+                           FontWeight="DemiBold"
+                           Margin="10,0,0,0" />
+                </StackPanel>
             </Grid>
         </Grid>
 
@@ -328,10 +334,12 @@
               Grid.Row="0"
               Background="White"
               Margin="5">
-            <Button Content="Save"
+            <Button Name="saveButton"
+                    Content="Save"
                     FontSize="20"
                     Height="35"
-                    Width="140" />
+                    Width="140"
+                    Click="saveButton_Click" />
         </Grid>
 
         <Grid Grid.Column="3"
