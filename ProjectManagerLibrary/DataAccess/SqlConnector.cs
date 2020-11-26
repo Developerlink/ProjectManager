@@ -20,7 +20,7 @@ namespace ProjectManagerLibrary.DataAccess
 
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
-                output = conn.Query<Day>("dbo.spDays_Get").ToList();
+                output = conn.Query<Day>("dbo.spDays_GetAll").ToList();
             }
 
             return output;
@@ -126,6 +126,80 @@ namespace ProjectManagerLibrary.DataAccess
         }
 
         public List<Models.Task> GetTasks()
+        {
+            List<Models.Task> output;
+
+            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                output = conn.Query<Models.Task>("dbo.spTasks_GetAll").ToList();
+            }
+
+            return output;
+        }
+
+        public void InsertTask(Models.Task task, Project project)
+        {
+            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@Name", task.Name);
+                p.Add("@Priority", task.Priority);
+                p.Add("@EstimatedStartDate", task.EstimatedStartDate);
+                p.Add("@ActualStartDate", task.ActualStartDate);
+                p.Add("@EstimatedEndDate", task.EstimatedEndDate);
+                p.Add("@ActualEndDate", task.ActualEndDate);
+                p.Add("@EstimatedHoursInMinutes", task.EstimatedHoursInMinutes);
+                p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
+                p.Add("@EstimatedDays", task.EstimatedDays);
+                p.Add("@ActualDays", task.ActualDays);
+                p.Add("@ProjectID", project.ID);
+                p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                conn.Execute("dbo.spTasks_Insert", p, commandType: CommandType.StoredProcedure);
+
+                // p.get<Type>("ColumnName");
+                task.ID = p.Get<int>("ID");
+            }
+        }
+
+        public void UpdateTask(Models.Task task)
+        {
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ID", task.ID);
+                p.Add("@Name", task.Name);
+                p.Add("@Priority", task.Priority);
+                p.Add("@EstimatedStartDate", task.EstimatedStartDate);
+                p.Add("@ActualStartDate", task.ActualStartDate);
+                p.Add("@EstimatedEndDate", task.EstimatedEndDate);
+                p.Add("@ActualEndDate", task.ActualEndDate);
+                p.Add("@EstimatedHoursInMinutes", task.EstimatedHoursInMinutes);
+                p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
+                p.Add("@EstimatedDays", task.EstimatedDays);
+                p.Add("@ActualDays", task.ActualDays);
+
+                conn.Execute("dbo.spTasks_Update", p, commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public void DeleteTask(Models.Task task)
+        {
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("ID", task.ID);
+
+                conn.Execute("dbo.spTasks_Delete", p, commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public void DeleteSubTask(Models.Task task)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteSubSubTask(Models.Task task)
         {
             throw new NotImplementedException();
         }

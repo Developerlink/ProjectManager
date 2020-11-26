@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ValueConverters\TaskLevelToColor.cs" />
+    <Compile Include="ValueConverters\TaskLevelToFontSize.cs" />
     <Page Include="CreditsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -70,6 +72,7 @@
     <Compile Include="CreditsWindow.xaml.cs">
       <DependentUpon>CreditsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters\DateToDefault.cs" />
     <Compile Include="DayManagementWindow.xaml.cs">
       <DependentUpon>DayManagementWindow.xaml</DependentUpon>
     </Compile>
@@ -158,5 +161,6 @@
   <ItemGroup>
     <Resource Include="Images\hour.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

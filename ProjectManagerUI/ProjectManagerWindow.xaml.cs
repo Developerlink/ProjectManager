@@ -21,8 +21,8 @@ namespace ProjectManagerUI
     /// </summary>
     public partial class ProjectManagerWindow : Window
     {
-        public Project SelectedProject { get; set; }
-        public List<ProjectManagerLibrary.Models.Task> SortedTaskList { get; set; }
+        public Project SelectedProject { get; set; } = new Project();
+        public List<ProjectManagerLibrary.Models.Task> SortedTaskList { get; set; } = new List<ProjectManagerLibrary.Models.Task>();
         public ProjectManagerWindow()
         {
             InitializeComponent();
@@ -34,6 +34,7 @@ namespace ProjectManagerUI
 
             GetAllData(id);
             DisplayDataIntoForm();
+            WireUpLists();
         }
 
         private void DisplayDataIntoForm()
@@ -72,20 +73,42 @@ namespace ProjectManagerUI
 
         private void GetAllData(int id)
         {
+            SortedTaskList.Clear();
             // Get project data from database.
             SelectedProject = GlobalConfig.Connection.GetProject(id);
-            // Get all Tasks and put them into the project
+            // Get all Tasks and put them into a temporary list.
+            List<ProjectManagerLibrary.Models.Task> tempList = new List<ProjectManagerLibrary.Models.Task>(GlobalConfig.Connection.GetTasks());
+            // Sort all tasks according to priority and put them into the project.
+            SelectedProject.TaskList = tempList.OrderBy(x => x.Priority).ToList();
+
             // Get all Subtasks and put them into each Task
             // Get all SubSubTasks and put them into each SubTask
             // Use data from SubSubTasks to fill in the blanks in Subtasks
             // Use data from SubTasks to fill in the blanks in Tasks
             // Use data from Tasks to fill in the blanks in project
+
+            // Fix default datetimes to show nothing
+            DateTime defaultDatetime = DateTime.Parse("1800-01-01");
+            foreach (ProjectManagerLibrary.Models.Task t in SortedTaskList)
+            {
+                // -1 first date is earlier, 0 dates are the same, 1 first date is later
+                if(DateTime.Compare(t.EstimatedStartDate, defaultDatetime) == 0)
+                {
+                    
+                }
+            }
+
+            PopulateSortedTaskList();
         }
 
         private void PopulateSortedTaskList()
         {
-            // Read data from database and sort them with logic.
 
+            // Read data from database and sort them with logic.
+            foreach(ProjectManagerLibrary.Models.Task t in SelectedProject.TaskList)
+            {
+                SortedTaskList.Add(t);
+            }
         }
 
         private void UpdateProjectWithInput()
@@ -159,6 +182,129 @@ namespace ProjectManagerUI
             }
         }
 
+        private void newTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateNewTask();
+        }        
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if((Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.N)) || (Keyboard.IsKeyDown(Key.RightCtrl) && Keyboard.IsKeyDown(Key.N)))
+            {
+                CreateNewTask();
+            }
+            else if(Keyboard.IsKeyDown(Key.Delete))
+            {
+                DeleteTask();
+            }
+        }
+
+        private void DeleteTask()
+        {
+            if (taskListView.Items.Count > 0)
+            {
+                if (taskListView.SelectedItem != null)
+                {
+                    var selectedTask = taskListView.SelectedItem as ProjectManagerLibrary.Models.Task;
+
+                    if (selectedTask.TaskLevel == 1)
+                    {
+                        GlobalConfig.Connection.DeleteTask(selectedTask);
+                    }
+                    else if (selectedTask.TaskLevel == 2)
+                    {
+                        GlobalConfig.Connection.DeleteSubTask(selectedTask);
+                    }
+                    else if (selectedTask.TaskLevel == 3)
+                    {
+                        GlobalConfig.Connection.DeleteSubSubTask(selectedTask);
+                    }
+
+                    GetAllData(SelectedProject.ID);
+                    WireUpLists();
+                }
+            }
+        }
+
+        private void CreateNewTask()
+        {
+            if(taskListView.Items.Count > 0)
+            {
+                if(taskListView.SelectedItem == null)
+                {
+                    // If no item is selected Create a new task and put it into the bottom of the list.
+                    var newTask = new ProjectManagerLibrary.Models.Task();
+                    // Every task has a priority equal to its position in the list. 
+                    // If this task should be at the bottom then the priority should be the latest priority 
+                    // +1.
+                    newTask.Priority = SortedTaskList.Where(x => x.TaskLevel == 1).Max(x => x.Priority) + 1;
+                    GlobalConfig.Connection.InsertTask(newTask, SelectedProject);
+                }
+                else
+                {
+                    var selectedTask = taskListView.SelectedItem as ProjectManagerLibrary.Models.Task; 
+                    if(selectedTask.TaskLevel == 1)
+                    {
+                        // Put that priority into the new task
+                        var newTask = new ProjectManagerLibrary.Models.Task();
+                        newTask.Priority = selectedTask.Priority;
+
+                        // Add 1 to priority of selected task and all subsequent tasks.                        
+                        foreach(ProjectManagerLibrary.Models.Task t in SortedTaskList)
+                        {
+                            if(t.TaskLevel == 1 && t.Priority >= newTask.Priority)
+                            {
+                                t.Priority++;
+                            }
+                        }
+
+                        // Update the database with the new priority, but only the tasks coming after the new task.
+                        foreach(ProjectManagerLibrary.Models.Task t in SortedTaskList)
+                        {
+                            if(t.TaskLevel == 1 && t.Priority > newTask.Priority)
+                            {
+                                GlobalConfig.Connection.UpdateTask(t);
+                            }
+                        }
+
+                        // Insert the new task into the database.
+                        GlobalConfig.Connection.InsertTask(newTask, SelectedProject);                        
+                    }
+                    else if (selectedTask.TaskLevel == 2)
+                    {
+                        // If the selected task is level 2 then create a new task just beneath the selected task with task level 2.
+                    }
+                    else if (selectedTask.TaskLevel == 3)
+                    {
+                        // If the selected task is level 3 then create a new task just beneath the selected task with task level 3.
+                    }
+                }
+
+                // Read all data from database again and repopulate the listview.
+                GetAllData(SelectedProject.ID);
+                WireUpLists();
+            }
+            else
+            {
+                // Create the first task.
+                var newTask = new ProjectManagerLibrary.Models.Task();
+                //! No need to set task level, since it is default to the correct level as long as it is inserted
+                //! into the correct tabel. However it cannot be changed afterwards and a new task needs to be created
+                //! if it needs to be set on a different task level, so a subtask cannot be promoted to a task or vice versa. 
+                //newTask.TaskLevel = 1;
+                newTask.Priority = 1;
+                GlobalConfig.Connection.InsertTask(newTask, SelectedProject);
+
+                // Read all data from database again and repopulate the listview.
+                GetAllData(SelectedProject.ID);
+                WireUpLists();
+            }
+        }
+
+        private void UpdateTaskPriority()
+        {
+
+        }
 
         //x finish making stored procedures for the the project insert and project update
         //x add workspace selection for create page
@@ -181,8 +327,14 @@ namespace ProjectManagerUI
         //x made the string property projectstatus in c# model and in database to the boolean IsActive instead 
         //x save changes to project
 
-        // make create task button put new task into tasks in db
-        // read tasks into tasklistview
+        //x make create task button put new task into tasks in db
+        //x read tasks into tasklistview
+        //x refactor timespan to bigint
+        //x create stored procedures for tasks
+        //x make converter for default datetimes, color and fontsize
+        //x create task and put into correct order in the list
+        //x make the delete function for tasks
+
         // make create task button put new subtask into tasks in db
         // read subtasks into tasklistview
         // color tasks and subtasks differently to separate them

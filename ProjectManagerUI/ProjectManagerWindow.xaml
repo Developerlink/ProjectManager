@@ -4,11 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectManagerUI"
+        xmlns:converters="clr-namespace:ProjectManagerUI.ValueConverters"
         mc:Ignorable="d"
         Title="Project Manager"
         Height="900"
         Width="1350"
-        Background="LightGray">
+        Background="LightGray"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <converters:DateToDefault x:Key="DateToDefault" />
+        <converters:TaskLevelToColor x:Key="TaskLevelToColor" />
+        <converters:TaskLevelToFontSize x:Key="TaskLevelToFontSize" />
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -145,7 +152,7 @@
                    VerticalContentAlignment="Center"
                    Grid.Column="0"
                    Grid.Row="0" />
-            <Label Name="endDateLabel" 
+            <Label Name="endDateLabel"
                    Content="Estimated End Date:"
                    FontSize="14"
                    FontWeight="DemiBold"
@@ -356,10 +363,12 @@
               Grid.Row="2"
               Background="White"
               Margin="5">
-            <Button Content="New Task"
+            <Button Name="newTaskButton"
+                    Content="New Task"
                     FontSize="20"
                     Height="35"
-                    Width="140" />
+                    Width="140"
+                    Click="newTaskButton_Click" />
         </Grid>
 
         <Grid Grid.Column="3"
@@ -401,8 +410,11 @@
                                     Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name}"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBox Text="{Binding Name}"
+                                         Margin="-6, -3,-5,0"
+                                         Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" 
+                                         Foreground="White"
+                                         FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -410,8 +422,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Frontend}"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBox Text="{Binding EstimatedHoursInMinutes}"
+                                         Margin="-6, -3,-5,0"
+                                         Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                         Foreground="White"
+                                         FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -419,8 +434,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Backend}"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBox Text="{Binding ActualHoursInMinutes}"
+                                         Margin="-6, -3,-5,0"
+                                         Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                         Foreground="White"
+                                         FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -428,8 +446,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding StartDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBox Text="{Binding EstimatedDays}"
+                                         Margin="-6, -3,-5,0"
+                                         Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                         Foreground="White"
+                                         FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -437,8 +458,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBox Text="{Binding ActualDays }"
+                                         Margin="-6, -3,-5,0"
+                                         Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                         Foreground="White"
+                                         FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -446,8 +470,9 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <DatePicker SelectedDate="{Binding EstimatedStartDate, Converter={StaticResource DateToDefault}}"
+                                            Margin="-6, -3,-5,0"
+                                            Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -455,8 +480,9 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <DatePicker SelectedDate="{Binding ActualStartDate, Converter={StaticResource DateToDefault}}"
+                                            Margin="-6, -3,-5,0"
+                                            Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -464,8 +490,9 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <DatePicker SelectedDate="{Binding EstimatedEndDate, Converter={StaticResource DateToDefault}}"
+                                            Margin="-6, -3,-5,0"
+                                            Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -473,8 +500,9 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <DatePicker SelectedDate="{Binding ActualEndDate, Converter={StaticResource DateToDefault}}"
+                                            Margin="-6, -3,-5,0"
+                                            Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -482,8 +510,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBlock Text="{Binding HourBalanceInMinutes }"
+                                           Margin="-6, -3,-5,0"
+                                           Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                           Foreground="White"
+                                           FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -491,8 +522,11 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding EndDate, StringFormat=dd-MM-yyyy }"
-                                           Margin="-6, -3,-5,0" />
+                                <TextBlock Text="{Binding DayBalance }"
+                                           Margin="-6, -3,-5,0"
+                                           Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
+                                           Foreground="White"
+                                           FontSize="{Binding TaskLevel, Converter={StaticResource TaskLevelToFontSize}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

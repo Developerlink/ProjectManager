@@ -16,9 +16,15 @@ namespace ProjectManagerLibrary.DataAccess
         List<Project> GetProjects();
         Project GetProject(int id);
         void UpdateProject(Project project);
-        List<ProjectManagerLibrary.Models.Task> GetTasks();
-        List<ProjectManagerLibrary.Models.Task> GetSubTasks();
-        List<ProjectManagerLibrary.Models.Task> GetSubSubTasks();
+        void InsertTask(Models.Task task, Project project);
+        void UpdateTask(Models.Task task);
+        void DeleteTask(Models.Task task);
+        void DeleteSubTask(Models.Task task);
+        void DeleteSubSubTask(Models.Task task);
+
+        List<Models.Task> GetTasks();
+        List<Models.Task> GetSubTasks();
+        List<Models.Task> GetSubSubTasks();
 
     }
 }

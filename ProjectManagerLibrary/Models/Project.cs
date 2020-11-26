@@ -23,6 +23,6 @@ namespace ProjectManagerLibrary.Models
         public string TechStack { get; set; }
         public bool IsEnded { get; set; }
         public string WorkSpace { get; set; }
-        public List<Task> TaskList { get; set; }
+        public List<Task> TaskList { get; set; } = new List<Task>();
     }
 }
