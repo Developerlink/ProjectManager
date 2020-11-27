@@ -186,7 +186,7 @@ namespace ProjectManagerUI
                     var selectedTask = taskListView.SelectedItem as ProjectManagerLibrary.Models.Task;
                     int currentIndex = taskListView.SelectedIndex;
 
-                    GlobalConfig.Connection.DeleteTask(selectedTask);
+                    GlobalConfig.Connection.DeleteTaskAllLevels(selectedTask);
 
                     GetAllData(SelectedProject.ID);
                     WireUpLists();
@@ -222,7 +222,8 @@ namespace ProjectManagerUI
                     // If this task should be at the bottom then the priority should be the latest priority 
                     // +1.
                     newTask.Priority = SortedTaskList.Where(x => x.TaskLevel == 1).Max(x => x.Priority) + 1;
-                    GlobalConfig.Connection.InsertTask(newTask, SelectedProject);
+                    newTask.ProjectID = SelectedProject.ID;
+                    GlobalConfig.Connection.InsertTask(newTask);
                 }
                 else
                 {
@@ -232,6 +233,7 @@ namespace ProjectManagerUI
                         // Put that priority into the new task
                         var newTask = new ProjectManagerLibrary.Models.Task();
                         newTask.Priority = selectedTask.Priority;
+                        newTask.ProjectID = SelectedProject.ID;
 
                         // Add 1 to priority of selected task and all subsequent tasks.                        
                         foreach (ProjectManagerLibrary.Models.Task t in SortedTaskList)
@@ -247,12 +249,12 @@ namespace ProjectManagerUI
                         {
                             if (t.TaskLevel == 1 && t.Priority > newTask.Priority)
                             {
-                                GlobalConfig.Connection.UpdateTask(t);
+                                GlobalConfig.Connection.UpdateTaskAllLevels(t);
                             }
                         }
 
                         // Insert the new task into the database.
-                        GlobalConfig.Connection.InsertTask(newTask, SelectedProject);
+                        GlobalConfig.Connection.InsertTask(newTask);
                     }
                 }
 
@@ -269,7 +271,8 @@ namespace ProjectManagerUI
                 //! if it needs to be set on a different task level, so a subtask cannot be promoted to a task or vice versa. 
                 //newTask.TaskLevel = 1;
                 newTask.Priority = 1;
-                GlobalConfig.Connection.InsertTask(newTask, SelectedProject);
+                newTask.ProjectID = SelectedProject.ID;
+                GlobalConfig.Connection.InsertTask(newTask);
 
                 // Read all data from database again and repopulate the listview.
                 GetAllData(SelectedProject.ID);
@@ -308,7 +311,7 @@ namespace ProjectManagerUI
                             // +1.                       
                             newSubTask.Priority = SortedTaskList.Where(x => x.ParentTaskID == selectedTask.ID).Max(x => x.Priority) + 1;
                         }
-                        GlobalConfig.Connection.InsertSubTask(newSubTask, selectedTask);
+                        GlobalConfig.Connection.InsertSubTask(newSubTask);
                     }
                     else if (selectedTask.TaskLevel == 2)
                     {
@@ -332,18 +335,12 @@ namespace ProjectManagerUI
                         {
                             if (t.TaskLevel == 2 && t.Priority > newSubTask.Priority && t.ParentTaskID == newSubTask.ParentTaskID)
                             {
-                                GlobalConfig.Connection.UpdateTask(t);
+                                GlobalConfig.Connection.UpdateTaskAllLevels(t);
                             }
                         }
 
-                        // Not selected task since the method requires passing in the parentask, and in this case the selected task
-                        // is a 'colleague' subtask
-                        // Create a temporary parentTask with the correct ID and use that as a dummy to pass the correct id into the
-                        // database method.
-                        var tempParentTask = new ProjectManagerLibrary.Models.Task();
-                        tempParentTask.ID = newSubTask.ParentTaskID;
                         // Insert the new task into the database.
-                        GlobalConfig.Connection.InsertSubTask(newSubTask, tempParentTask);
+                        GlobalConfig.Connection.InsertSubTask(newSubTask);
                     }
 
                 }
@@ -356,7 +353,73 @@ namespace ProjectManagerUI
 
         private void CreateNewSubSubTask()
         {
+            // If there are no items then don't do anything, since all subtasks need a task that they belong to.
+            if (taskListView.Items.Count > 0)
+            {
+                // An item needs to be selected so that we can use it as a parent task
+                if (taskListView.SelectedItem != null)
+                {
+                    var selectedTask = taskListView.SelectedItem as ProjectManagerLibrary.Models.Task;
+                    // If that item is TaskLevel == 2, then use it as the parenTaskID and create the subtask at the bottom of 
+                    // its list of subtasks
+                    if (selectedTask.TaskLevel == 2)
+                    {
+                        var newSubSubTask = new ProjectManagerLibrary.Models.Task();
+                        newSubSubTask.ParentTaskID = selectedTask.ID;
 
+                        // Check if this task has any subtasks
+                        int subTaskCount = SortedTaskList.Count(x => x.ParentTaskID == selectedTask.ID);
+
+                        // If it has no subtasks then give newSubTask first priority.
+                        if (subTaskCount == 0)
+                        {
+                            newSubSubTask.Priority = 1;
+                        }
+                        else
+                        {
+                            // Every task has a priority equal to its position in the list. 
+                            // If this task should be at the bottom then the priority should be the latest priority 
+                            // +1.                       
+                            newSubSubTask.Priority = SortedTaskList.Where(x => x.ParentTaskID == selectedTask.ID).Max(x => x.Priority) + 1;
+                        }
+                        GlobalConfig.Connection.InsertSubSubTask(newSubSubTask);
+                    }
+                    else if (selectedTask.TaskLevel == 3)
+                    {
+                        // If item is TaskLevel == 3 then the ParenTaskID is the same.
+                        // Put that priority into the new task
+                        var newSubSubTask = new ProjectManagerLibrary.Models.Task();
+                        newSubSubTask.ParentTaskID = selectedTask.ParentTaskID;
+                        newSubSubTask.Priority = selectedTask.Priority;
+
+                        // Add 1 to priority of selected task and all subsequent tasks.                        
+                        foreach (ProjectManagerLibrary.Models.Task t in SortedTaskList)
+                        {
+                            if (t.TaskLevel == 3 && t.Priority >= newSubSubTask.Priority && t.ParentTaskID == newSubSubTask.ParentTaskID)
+                            {
+                                t.Priority++;
+                            }
+                        }
+
+                        // Update the database with the new priority, but only the tasks coming after the new task.
+                        foreach (ProjectManagerLibrary.Models.Task t in SortedTaskList)
+                        {
+                            if (t.TaskLevel == 3 && t.Priority > newSubSubTask.Priority && t.ParentTaskID == newSubSubTask.ParentTaskID)
+                            {
+                                GlobalConfig.Connection.UpdateTaskAllLevels(t);
+                            }
+                        }
+
+                        // Insert the new task into the database.
+                        GlobalConfig.Connection.InsertSubSubTask(newSubSubTask);
+                    }
+
+                }
+
+                // Read all data from database again and repopulate the listview.
+                GetAllData(SelectedProject.ID);
+                WireUpLists();
+            }
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)

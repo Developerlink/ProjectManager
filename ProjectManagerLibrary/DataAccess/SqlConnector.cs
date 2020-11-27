@@ -160,7 +160,7 @@ namespace ProjectManagerLibrary.DataAccess
             return output;
         }
 
-        public void InsertTask(Models.Task task, Project project)
+        public void InsertTask(Models.Task task)
         {
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
@@ -175,7 +175,7 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
                 p.Add("@EstimatedDays", task.EstimatedDays);
                 p.Add("@ActualDays", task.ActualDays);
-                p.Add("@ProjectID", project.ID);
+                p.Add("@ProjectID", task.ProjectID);
                 p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 conn.Execute("dbo.spTasks_Insert", p, commandType: CommandType.StoredProcedure);
@@ -185,7 +185,7 @@ namespace ProjectManagerLibrary.DataAccess
             }
         }
 
-        public void UpdateTask(Models.Task task)
+        public void UpdateTaskAllLevels(Models.Task task)
         {
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
@@ -217,7 +217,7 @@ namespace ProjectManagerLibrary.DataAccess
             }
         }
 
-        public void DeleteTask(Models.Task task)
+        public void DeleteTaskAllLevels(Models.Task task)
         {
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
@@ -240,7 +240,7 @@ namespace ProjectManagerLibrary.DataAccess
         }
 
 
-        public void InsertSubTask(Models.Task task, Models.Task parentTask)
+        public void InsertSubTask(Models.Task task)
         {
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
@@ -255,7 +255,7 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
                 p.Add("@EstimatedDays", task.EstimatedDays);
                 p.Add("@ActualDays", task.ActualDays);
-                p.Add("@ParentTaskID", parentTask.ID);
+                p.Add("@ParentTaskID", task.ParentTaskID);
                 p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 conn.Execute("dbo.spSubTasks_Insert", p, commandType: CommandType.StoredProcedure);
@@ -265,7 +265,7 @@ namespace ProjectManagerLibrary.DataAccess
             }
         }
 
-        public void InsertSubSubTask(Models.Task task, Models.Task parentTask)
+        public void InsertSubSubTask(Models.Task task)
         {
             using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
@@ -280,7 +280,7 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
                 p.Add("@EstimatedDays", task.EstimatedDays);
                 p.Add("@ActualDays", task.ActualDays);
-                p.Add("@ParentTaskID", parentTask.ID);
+                p.Add("@ParentTaskID", task.ParentTaskID);
                 p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 conn.Execute("dbo.spSubSubTasks_Insert", p, commandType: CommandType.StoredProcedure);

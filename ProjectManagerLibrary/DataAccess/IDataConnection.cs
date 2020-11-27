@@ -18,12 +18,12 @@ namespace ProjectManagerLibrary.DataAccess
         void UpdateProject(Project project);
         
         // These 3 methods handle all level of tasks
-        void InsertTask(Models.Task task, Project project);
-        void UpdateTask(Models.Task task);
-        void DeleteTask(Models.Task task);
+        void InsertTask(Models.Task task);
+        void UpdateTaskAllLevels(Models.Task task);
+        void DeleteTaskAllLevels(Models.Task task);
 
-        void InsertSubTask(Models.Task task, Models.Task parentTask);
-        void InsertSubSubTask(Models.Task task, Models.Task parentTask);
+        void InsertSubTask(Models.Task task);
+        void InsertSubSubTask(Models.Task task);
 
 
         List<Models.Task> GetAllTasks(Project project);
