@@ -18,7 +18,8 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -337,20 +338,26 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Column="3"
+        <Grid Grid.Column="2"
+              Grid.ColumnSpan="2"
               Grid.Row="0"
               Background="White"
               Margin="5">
-            <Button Name="saveButton"
-                    Content="Save"
+            <Button Content="New Problem"
                     FontSize="20"
+                    FontWeight="DemiBold"
                     Height="35"
-                    Width="140"
-                    Click="saveButton_Click" />
+                    Width="150"
+                    Background="CornflowerBlue"
+                    Foreground="White"
+                    BorderBrush="Black"
+                    BorderThickness="3" />
+            
         </Grid>
 
-        <Grid Grid.Column="3"
-              Grid.Row="1"
+        <Grid Grid.Column="2"
+              Grid.ColumnSpan="2"
+              Grid.Row="1"              
               Background="White"
               Margin="5">
             <Button Content="Template"
@@ -359,26 +366,62 @@
                     Width="140" />
         </Grid>
 
-        <Grid Grid.Column="3"
+        <Grid Grid.Column="2"
               Grid.Row="2"
+              Grid.RowSpan="2"
               Background="White"
               Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Button Name="newTaskButton"
                     Content="New Task"
+                    FontSize="16"
+                    Height="35"
+                    Width="140"
+                    Grid.Row="0"
+                    Click="newTaskButton_Click" />
+            <Button Name="newSubTaskButton"
+                    Content="New SubTask"
+                    FontSize="16"
+                    Height="35"
+                    Width="140"
+                    Grid.Row="1"
+                    Click="newSubTaskButton_Click" />
+            <Button Name="newSubSubTaskButton"
+                    Content="New SubSubTask"
+                    FontSize="16"
+                    Height="35"
+                    Width="140"
+                    Grid.Row="2"
+                    Click="newSubSubTaskButton_Click" />
+        </Grid>
+        
+        <Grid Grid.Column="3"
+              Grid.Row="2"
+              Grid.RowSpan="2"
+              Background="White"
+              Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Button Name="saveButton"
+                    Content="Save"
                     FontSize="20"
                     Height="35"
                     Width="140"
-                    Click="newTaskButton_Click" />
-        </Grid>
-
-        <Grid Grid.Column="3"
-              Grid.Row="3"
-              Background="White"
-              Margin="5">
-            <Button Content="New Problem"
-                    FontSize="20"
+                    Grid.Row="0"
+                    Click="saveButton_Click" />
+            <Button Name="deleteButton"
+                    Content="Delete"
+                    FontSize="16"
                     Height="35"
-                    Width="140" />
+                    Width="140"
+                    Grid.Row="1"
+                    Click="deleteButton_Click" />
         </Grid>
 
         <ListView x:Name="taskListView"

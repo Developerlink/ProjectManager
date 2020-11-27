@@ -98,7 +98,7 @@ namespace ProjectManagerLibrary.DataAccess
         }
         public void UpdateProject(Project project)
         {
-            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
                 var p = new DynamicParameters();
                 p.Add("@ID", project.ID);
@@ -108,30 +108,53 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@StartDate", project.StartDate);
                 p.Add("@EstimatedEndDate", project.EstimatedEndDate);
                 p.Add("@ActualEndDate", project.ActualEndDate);
-                p.Add("@WorkSpace", project.WorkSpace);              
+                p.Add("@WorkSpace", project.WorkSpace);
                 p.Add("@IsEnded", project.IsEnded);
 
                 conn.Execute("dbo.Projects_Update", p, commandType: CommandType.StoredProcedure);
             }
         }
 
-        public List<Models.Task> GetSubSubTasks()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Models.Task> GetSubTasks()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Models.Task> GetTasks()
+        public List<Models.Task> GetAllSubSubTasks(Models.Task parentTask)
         {
             List<Models.Task> output;
 
-            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
-                output = conn.Query<Models.Task>("dbo.spTasks_GetAll").ToList();
+                var p = new DynamicParameters();
+                p.Add("@ParentTaskID", parentTask.ID);
+
+                output = conn.Query<Models.Task>("dbo.spSubSubTasks_GetAll", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+
+            return output;
+        }
+
+        public List<Models.Task> GetAllSubTasks(Models.Task parentTask)
+        {
+            List<Models.Task> output;
+
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ParentTaskID", parentTask.ID);
+
+                output = conn.Query<Models.Task>("dbo.spSubTasks_GetAll", p, commandType: CommandType.StoredProcedure).ToList();
+            }
+
+            return output;
+        }
+
+        public List<Models.Task> GetAllTasks(Project project)
+        {
+            List<Models.Task> output;
+
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@ProjectID", project.ID);
+
+                output = conn.Query<Models.Task>("dbo.spTasks_GetAll", p, commandType: CommandType.StoredProcedure).ToList();
             }
 
             return output;
@@ -139,7 +162,7 @@ namespace ProjectManagerLibrary.DataAccess
 
         public void InsertTask(Models.Task task, Project project)
         {
-            using(IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
             {
                 var p = new DynamicParameters();
                 p.Add("@Name", task.Name);
@@ -179,7 +202,18 @@ namespace ProjectManagerLibrary.DataAccess
                 p.Add("@EstimatedDays", task.EstimatedDays);
                 p.Add("@ActualDays", task.ActualDays);
 
-                conn.Execute("dbo.spTasks_Update", p, commandType: CommandType.StoredProcedure);
+                if (task.TaskLevel == 1)
+                {
+                    conn.Execute("dbo.spTasks_Update", p, commandType: CommandType.StoredProcedure);
+                }
+                if (task.TaskLevel == 2)
+                {
+                    conn.Execute("dbo.spSubTasks_Update", p, commandType: CommandType.StoredProcedure);
+                }
+                if (task.TaskLevel == 3)
+                {
+                    conn.Execute("dbo.spSubSubTasks_Update", p, commandType: CommandType.StoredProcedure);
+                }
             }
         }
 
@@ -190,83 +224,73 @@ namespace ProjectManagerLibrary.DataAccess
                 var p = new DynamicParameters();
                 p.Add("ID", task.ID);
 
-                conn.Execute("dbo.spTasks_Delete", p, commandType: CommandType.StoredProcedure);
+                if (task.TaskLevel == 1)
+                {
+                    conn.Execute("dbo.spTasks_Delete", p, commandType: CommandType.StoredProcedure);
+                }
+                if (task.TaskLevel == 2)
+                {
+                    conn.Execute("dbo.spSubTasks_Delete", p, commandType: CommandType.StoredProcedure);
+                }
+                if (task.TaskLevel == 3)
+                {
+                    conn.Execute("dbo.spSubSubTasks_Delete", p, commandType: CommandType.StoredProcedure);
+                }
             }
         }
 
-        public void DeleteSubTask(Models.Task task)
+
+        public void InsertSubTask(Models.Task task, Models.Task parentTask)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@Name", task.Name);
+                p.Add("@Priority", task.Priority);
+                p.Add("@EstimatedStartDate", task.EstimatedStartDate);
+                p.Add("@ActualStartDate", task.ActualStartDate);
+                p.Add("@EstimatedEndDate", task.EstimatedEndDate);
+                p.Add("@ActualEndDate", task.ActualEndDate);
+                p.Add("@EstimatedHoursInMinutes", task.EstimatedHoursInMinutes);
+                p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
+                p.Add("@EstimatedDays", task.EstimatedDays);
+                p.Add("@ActualDays", task.ActualDays);
+                p.Add("@ParentTaskID", parentTask.ID);
+                p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                conn.Execute("dbo.spSubTasks_Insert", p, commandType: CommandType.StoredProcedure);
+
+                // p.get<Type>("ColumnName");
+                task.ID = p.Get<int>("ID");
+            }
         }
 
-        public void DeleteSubSubTask(Models.Task task)
+        public void InsertSubSubTask(Models.Task task, Models.Task parentTask)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = new SqlConnection(GlobalConfig.GetConnectionStringFromAppConfigByName(SqlConnectionNameInAppConfig)))
+            {
+                var p = new DynamicParameters();
+                p.Add("@Name", task.Name);
+                p.Add("@Priority", task.Priority);
+                p.Add("@EstimatedStartDate", task.EstimatedStartDate);
+                p.Add("@ActualStartDate", task.ActualStartDate);
+                p.Add("@EstimatedEndDate", task.EstimatedEndDate);
+                p.Add("@ActualEndDate", task.ActualEndDate);
+                p.Add("@EstimatedHoursInMinutes", task.EstimatedHoursInMinutes);
+                p.Add("@ActualHoursInMinutes", task.ActualHoursInMinutes);
+                p.Add("@EstimatedDays", task.EstimatedDays);
+                p.Add("@ActualDays", task.ActualDays);
+                p.Add("@ParentTaskID", parentTask.ID);
+                p.Add("ID", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                conn.Execute("dbo.spSubSubTasks_Insert", p, commandType: CommandType.StoredProcedure);
+
+                // p.get<Type>("ColumnName");
+                task.ID = p.Get<int>("ID");
+            }
         }
 
 
-
-        //    public void CreatePerson(PersonModel model)
-        //    {
-        //        using (IDbConnection conn = new SqlConnection(GlobalConfig.ConnString(db)))
-        //        {
-        //            var p = new DynamicParameters();
-        //            p.Add("@FirstName", model.FirstName);
-        //            p.Add("@LastName", model.LastName);
-        //            p.Add("@Email", model.Email);
-        //            p.Add("@Phonenumber", model.PhoneNumber);
-        //            p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-        //            conn.Execute("dbo.spPeople_Insert", p, commandType: CommandType.StoredProcedure);
-
-        //            model.Id = p.Get<int>("@Id");
-        //        }
-        //    }
-
-        //    /// <summary>
-        //    /// Saves a new prize to the database.
-        //    /// </summary>
-        //    /// <param name="model"></param>
-        //    /// <returns>The prize information, including the unique identifier</returns>
-        //    public void CreatePrize(PrizeModel model)
-        //    {
-        //        using (IDbConnection conn = new SqlConnection(GlobalConfig.ConnString(db)))
-        //        {
-        //            var p = new DynamicParameters();
-        //            p.Add("@PlaceNumber", model.PlaceNumber);
-        //            p.Add("@PlaceName", model.PlaceName);
-        //            p.Add("@PrizeAmount", model.PrizeAmount);
-        //            p.Add("@PrizePercentage", model.PrizePercentage);
-        //            p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-        //            conn.Execute("dbo.spPrizes_Insert", p, commandType: CommandType.StoredProcedure);
-
-        //            model.Id = p.Get<int>("@Id");
-        //        }
-        //    }
-
-        //    public void CreateTeam(TeamModel model)
-        //    {
-        //        using (IDbConnection conn = new SqlConnection(GlobalConfig.ConnString(db)))
-        //        {
-        //            var p = new DynamicParameters();
-        //            p.Add("@TeamName", model.TeamName);
-        //            p.Add("@Id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-        //            conn.Execute("dbo.spTeams_Insert", p, commandType: CommandType.StoredProcedure);
-
-        //            model.Id = p.Get<int>("@Id");
-
-        //            foreach (PersonModel tm in model.TeamMembers)
-        //            {
-        //                p = new DynamicParameters();
-        //                p.Add("@TeamId", model.Id);
-        //                p.Add("@PersonId", tm.Id);
-
-        //                conn.Execute("dbo.spTeamMembers_Insert", p, commandType: CommandType.StoredProcedure);
-        //            }
-        //        }
-        //    }
 
         //    public void CreateTournament(TournamentModel model)
         //    {
