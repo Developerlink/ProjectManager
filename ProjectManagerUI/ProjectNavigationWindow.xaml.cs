@@ -32,9 +32,9 @@ namespace ProjectManagerUI
             LoadProjectsFromDB();
             WireUpLists();
 
-            var window = new ProjectManagerWindow(24);
-            window.Show();
-            Close();
+            //var window = new ProjectManagerWindow(24);
+            //window.ShowDialog();
+            //Close();
         }
 
         private void LoadProjectsFromDB()

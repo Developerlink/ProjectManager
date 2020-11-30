@@ -24,7 +24,7 @@ namespace ProjectManagerUI.ValueConverters
             }
             else
             {
-                return "#829FD9";
+                return "#9ad3bc";
             }
 
 

@@ -428,11 +428,21 @@ namespace ProjectManagerUI
             {
                 UpdateProjectWithInput();
 
+                UpdateTasksWithInput();               
+
                 GlobalConfig.Connection.UpdateProject(SelectedProject);
 
                 MessageBox.Show("Project has been updated");
 
                 DisplayDataIntoForm();
+            }
+        }
+
+        private void UpdateTasksWithInput()
+        {
+            foreach(ProjectManagerLibrary.Models.Task t in SortedTaskList)
+            {
+                GlobalConfig.Connection.UpdateTaskAllLevels(t);
             }
         }
 
@@ -514,16 +524,15 @@ namespace ProjectManagerUI
         //x make the delete function for tasks
 
         //x Add better focus-handling after deleting a task
-        // make create task button put new subtask into tasks in db
-        // added more buttons to be able to do this
-
-        // read subtasks into tasklistview
-        // color tasks and subtasks differently to separate them
-        // style the items in the listview to make them better looking
-        // make create task button put new subsubtask into tasks in db
-        // read subsubtasks into tasklistview
-        // Make update save button function properly. 
-        // make lsitview automatically calculate hours needed and enddate date
+        //x make create task button put new subtask into tasks in db
+        //x added more buttons to be able to do this
+        //x read subtasks into tasklistview
+        //x color tasks and subtasks differently to separate them
+        //x style the items in the listview to make them better looking
+        //x make create task button put new subsubtask into tasks in db
+        //x read subsubtasks into tasklistview
+        //x Make update save button function properly. 
+        // make listview automatically calculate hours needed and enddate date
         // make the log problem window and functionality
     }
 }

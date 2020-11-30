@@ -453,7 +453,7 @@
                                     Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Name}"
+                                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=Default}"
                                          Margin="-6, -3,-5,0"
                                          Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" 
                                          Foreground="White"
@@ -465,7 +465,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding EstimatedHoursInMinutes}"
+                                <TextBox Text="{Binding EstimatedHoursInMinutes, Mode=TwoWay, UpdateSourceTrigger=Default}"
                                          Margin="-6, -3,-5,0"
                                          Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
                                          Foreground="White"
@@ -477,7 +477,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding ActualHoursInMinutes}"
+                                <TextBox Text="{Binding ActualHoursInMinutes, Mode=TwoWay, UpdateSourceTrigger=Default}"
                                          Margin="-6, -3,-5,0"
                                          Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
                                          Foreground="White"
@@ -489,7 +489,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding EstimatedDays}"
+                                <TextBox Text="{Binding EstimatedDays, Mode=TwoWay, UpdateSourceTrigger=Default}"
                                          Margin="-6, -3,-5,0"
                                          Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
                                          Foreground="White"
@@ -501,7 +501,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding ActualDays }"
+                                <TextBox Text="{Binding ActualDays, Mode=TwoWay, UpdateSourceTrigger=Default}"
                                          Margin="-6, -3,-5,0"
                                          Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}"
                                          Foreground="White"
@@ -513,7 +513,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <DatePicker SelectedDate="{Binding EstimatedStartDate, Converter={StaticResource DateToDefault}}"
+                                <DatePicker SelectedDate="{Binding EstimatedStartDate, Mode=TwoWay, UpdateSourceTrigger=Default, Converter={StaticResource DateToDefault }}"
                                             Margin="-6, -3,-5,0"
                                             Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
@@ -523,7 +523,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <DatePicker SelectedDate="{Binding ActualStartDate, Converter={StaticResource DateToDefault}}"
+                                <DatePicker SelectedDate="{Binding ActualStartDate, Mode=TwoWay, UpdateSourceTrigger=Default, Converter={StaticResource DateToDefault}}"
                                             Margin="-6, -3,-5,0"
                                             Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
@@ -533,7 +533,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <DatePicker SelectedDate="{Binding EstimatedEndDate, Converter={StaticResource DateToDefault}}"
+                                <DatePicker SelectedDate="{Binding EstimatedEndDate, Mode=TwoWay, UpdateSourceTrigger=Default, Converter={StaticResource DateToDefault}}"
                                             Margin="-6, -3,-5,0"
                                             Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>
@@ -543,7 +543,7 @@
                                     Width="auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <DatePicker SelectedDate="{Binding ActualEndDate, Converter={StaticResource DateToDefault}}"
+                                <DatePicker SelectedDate="{Binding ActualEndDate, Mode=TwoWay, UpdateSourceTrigger=Default, Converter={StaticResource DateToDefault}}"
                                             Margin="-6, -3,-5,0"
                                             Background="{Binding TaskLevel, Converter={StaticResource TaskLevelToColor}}" />
                             </DataTemplate>

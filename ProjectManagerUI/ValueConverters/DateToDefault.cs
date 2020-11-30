@@ -15,7 +15,7 @@ namespace ProjectManagerUI.ValueConverters
             var date = (DateTime)value;
             var defaultDate = DateTime.Parse("1800-01-01");
 
-            if(DateTime.Compare(date, defaultDate) == 0)
+            if (DateTime.Compare(date, defaultDate) == 0)
             {
                 return String.Empty;
             }
@@ -25,7 +25,13 @@ namespace ProjectManagerUI.ValueConverters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return 0;
+            var date = (DateTime)value;
+            if (date != null)
+            {
+                return date;
+            }
+
+            return DateTime.Parse("1800-01-01");
         }
     }
 }
